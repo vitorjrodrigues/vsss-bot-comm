@@ -17,7 +17,7 @@
 
 uint8_t logica[3];
 
-void getLogics(char n[])
+void getLogics(uint8_t n[])
 {
   // Logicas para o robo ID 1
   if (n[2] == '+' && n[5] == '+')

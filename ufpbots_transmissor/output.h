@@ -3,7 +3,7 @@
 
 uint8_t r_vel[3][2] = {0, 0, 0, 0, 0, 0};
 
-void getVelocities(char n[])
+void getVelocities(uint8_t n[])
 {
   for (uint8_t j = 0; j < 3; j++)
   {

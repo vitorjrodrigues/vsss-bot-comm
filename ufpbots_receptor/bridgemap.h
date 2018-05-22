@@ -1,8 +1,8 @@
 
-#define ESQ_0	5		  // ESQ_0 is the positive PWM of the left wheel
-#define ESQ_1	6		  // ESQ_1 is the negative PWM of the left wheel
-#define DIR_0	9		  // DIR_0 is the positive PWM of the right wheel
-#define	DIR_1	10		// DIR_1 is the negative pwm of the right wheel
+#define ESQ_0	9		  // ESQ_0 is the positive PWM of the left wheel
+#define ESQ_1	10		  // ESQ_1 is the negative PWM of the left wheel
+#define DIR_0	6		  // DIR_0 is the positive PWM of the right wheel
+#define	DIR_1	5		// DIR_1 is the negative pwm of the right wheel
 
 void setPWM()
 {
@@ -63,6 +63,22 @@ void TRGT(uint8_t ID, uint8_t DADOS[])
   analogWrite(DIR_1, DADOS[(3 * ID)]);
 }
 
+void onTest()
+{
+  digitalWrite(ESQ_0, HIGH);
+  digitalWrite(ESQ_1, LOW);
+  digitalWrite(DIR_0, HIGH);
+  digitalWrite(DIR_1, LOW);
+}
+
+void offTest()
+{
+  Serial.println("Motor Testing OFF");
+  digitalWrite(ESQ_0, LOW);
+  digitalWrite(ESQ_1, LOW);
+  digitalWrite(DIR_0, LOW);
+  digitalWrite(DIR_1, LOW);
+}
 
 
 

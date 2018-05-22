@@ -1,7 +1,6 @@
 #include <SPI.h>
 #include <RF24.h>
 #include <nRF24L01.h>
-#include <printf.h>
 
 #include "config.h"
 #include "bridgemap.h"
@@ -25,12 +24,18 @@ void setup() {
   //----- Configura a serial para comunicação com o robô
   Serial.begin(9600);
   radio.begin();
-  printf_begin();
+  radio.setPALevel(RF24_PA_LOW);
   radio.openReadingPipe(1, add1);
   radio.startListening();
 
   //----- Configura os robos para iniciarem parados
   STOP();
+
+  //----- Inicia o driver
+  pinMode(2, OUTPUT);
+  digitalWrite(2, HIGH);
+
+  Serial.println("Reciever Ready!\n");
 }
 
 void loop() {
@@ -38,7 +43,7 @@ void loop() {
   //RecieverConfiguration();  // Desativado enquanto as entradas seletoras nao estiverem sendo usadas
 
   //----- Recebe sinal transmitido em RF se disponivel
-  if (radio.available())
+  if (radio.available()==true)
   {
     memset(RECEBE, ' ', sizeof(RECEBE));
     radio.read(RECEBE, sizeof(RECEBE));
@@ -64,6 +69,11 @@ void loop() {
       else
         Serial.println(" ]]\n");
     }
+    Serial.print("My velocities: [[ ");
+    Serial.print(RECEBE[(2 + 3 * (robo_ID - 1))]);
+    Serial.print(", ");
+    Serial.print(RECEBE[(3 + 3 * (robo_ID - 1))]);
+    Serial.println("  ]]");
   }
 
   //---------------------------------------------------------------------
@@ -73,21 +83,33 @@ void loop() {
   {
     //----- Case para as logicas correspondentes (ver bridgemap.h para referencia)
     //----- A posicao no vetor recebido a ser enviada depende do id do robo
-    switch (RECEBE[(1 + 3 * (robo_ID - 1))]) {
-      case 12: //robo recebe logica para ir pra frente - F
-        FRWD(robo_ID, RECEBE);
-        break;
-      case 10: //robo recebe logica para girar AntiHorario - AH
-        TLFT(robo_ID, RECEBE);
-        break;
-      case 20: //robo recebe logica para girar Horario - H
-        TRGT(robo_ID, RECEBE);
-        break;
-      case 18: //robo recebe logica para ir pra tras - T
-        BKWD(robo_ID, RECEBE);
-        break;
-      default: //Mantem o rob� parado
-        STOP();
+    if (RECEBE[0] == 'I')
+    {
+      Serial.println("Motor Testing ON");
+      onTest();
+    }
+    else if (RECEBE[1] == 'O')
+    {
+      offTest();
+    }
+    else
+    {
+      switch (RECEBE[(1 + 3 * (robo_ID - 1))]) {
+        case 12: //robo recebe logica para ir pra frente - F
+          FRWD(robo_ID, RECEBE);
+          break;
+        case 10: //robo recebe logica para girar AntiHorario - AH
+          TLFT(robo_ID, RECEBE);
+          break;
+        case 20: //robo recebe logica para girar Horario - H
+          TRGT(robo_ID, RECEBE);
+          break;
+        case 18: //robo recebe logica para ir pra tras - T
+          BKWD(robo_ID, RECEBE);
+          break;
+        default: //Mantem o rob� parado
+          STOP();
+      }
     }
   }
   else // aqui vai ler o buffer do robo 0 (robo 0 e padrao, significa que nenhum robo esta selecionado)

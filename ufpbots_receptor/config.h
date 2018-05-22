@@ -1,14 +1,14 @@
 
-#define SEL_1 8
-#define SEL_0 7
-#define MODE  2
+//#define SEL_1 8
+//#pdefine SEL_0 7
+//#define MODE  2
 
 int transmit_mode = 0;
-uint8_t robo_ID = 0;
+uint8_t robo_ID = 1;//0;
 
 void RecieverConfiguration()
 {
-  pinMode(SEL_1, INPUT);
+  /*pinMode(SEL_1, INPUT);
   pinMode(SEL_0, INPUT);
   pinMode(MODE, INPUT);
   //----- Verifica qual o modo ativo
@@ -26,5 +26,5 @@ void RecieverConfiguration()
     }
     else {
       robo_ID = 0;
-    }
+    }*/
 }
